@@ -139,7 +139,6 @@ def run_solution(training_data: pd.DataFrame, ltable: pd.DataFrame, rtable: pd.D
 
     # training_label = training_data[class_name]
     from sklearn.ensemble import RandomForestRegressor
-    from sklearn.neural_network import MLPRegressor
     # rf = RandomForestClassifier(class_weight="balanced", random_state=0)
     # rf = RandomForestClassifier()
 
