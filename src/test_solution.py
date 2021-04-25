@@ -34,6 +34,26 @@ class MyTestCase(unittest.TestCase):
         self.percentage = 0.75
         self.check_passed()
 
+    def test_20_80(self):
+        self.percentage = 0.20
+        self.check_passed()
+
+    def test_17_83(self):
+        self.percentage = 0.17
+        self.check_passed()
+
+    def test_15_85(self):
+        self.percentage = 0.15
+        self.check_passed()
+
+    def test_10_90(self):
+        self.percentage = 0.10
+        self.check_passed()
+
+    def test_5_95(self):
+        self.percentage = 0.05
+        self.check_passed()
+
     def test_25_75(self):
         self.percentage = 0.25
         self.check_passed()

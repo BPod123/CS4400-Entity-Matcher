@@ -1,12 +1,6 @@
 from bisect import bisect_left
 from random import sample
-
 import pandas as pd
-import textdistance as td
-from pandas import DataFrame
-import statistics as stats
-import numpy as np
-from itertools import combinations
 from numpy import array
 
 
@@ -55,69 +49,18 @@ def get_data_from_ids(left_id, right_id, ltable, rtable, class_name = None, labe
 
 
 def extrapolate_attributes(left_data: dict, right_data: dict):
+    """
+    :param left_data:  Row from left table
+    :param right_data: Row from right table
+    :return: price difference if both prices are listed, else, -1
+    """
 
-   new_dict = dict()
-    # Attributes comparing values between the two items
-   # algos = {"hamming_": td.Hamming, "mlipns_": td.MLIPNS, "levenshtein_": td.Levenshtein,
-   #          "damerau_levenshtein_": td.DamerauLevenshtein, "jaro_winkler_": td.JaroWinkler, "strcmp95_": td.StrCmp95,
-   #          "needleman_wunsch_": td.NeedlemanWunsch, "gotoh_": td.Gotoh, "smith_waterman_": td.SmithWaterman,
-   #          "jaccard_": td.Jaccard, "sorensen_dice_": td.Sorensen, "tversky_": td.Tversky,
-   #          "overlap_coeff_": td.Overlap, "tanimoto_": td.Tanimoto, "cosine_similarity_": td.Cosine,
-   #          "monge_elkan_": td.MongeElkan, "bag_": td.Bag, "longest_common_subsequence_": td.LCSSeq,
-   #          "longest_common_substring_": td.LCSStr, "ratcliff_obershelp_": td.RatcliffObershelp,
-   #          "arithmeticcoding_": td.ArithNCD, "rle_": td.RLENCD, "bwt_rle_": td.BWTRLENCD, "square_root_": td.SqrtNCD,
-   #          "entropy_": td.EntropyNCD
-   #          }
-   #  # Attributes comparing values between the two items
-   # title, cat, brand, modelno = "title category brand modelno".split(" ")
-   #    # [title, {"hamming_", "levenshtein_", "jaro_winkler_", "bag_", "longest_common_substring_", "overlap_coeff_", "jaccard_"}]
-   # comparisons_to_make = [[title, algos.keys()],
-   #                        [brand, {"levenshtein_", "jaro_winkler_", "bag_", "overlap_coeff_", "jaccard_"}],
-   #                [title, brand, {"overlap_coeff_", "bag_", "jaccard_", "levenshtein_", "jaro_winkler_"}],
-   #                        [title, modelno, {"overlap_coeff_", "bag_", "jaccard_", "levenshtein_", "jaro_winkler_"}],
-   #                        [modelno, {"levenshtein_", "bag_", "jaro_winkler_"}],
-   #                        [cat, brand, {"bag_", "jaccard_", "levenshtein_", "jaro_winkler_"}],
-   # [cat, {"levenshtein_", "bag_"}]]
-   # s = ("hamming_", "jaccard_")
-   # comparisons_to_make = ((title, s), (brand, s), (modelno, s), (cat, s), (title, brand, s))
-   # # comparisons_to_make = ((title, ("hamming_", "jaccard_")),)
-   # null_attr_value = -1
-   # for instructions in comparisons_to_make:
-   #     if len(instructions) == 2:
-   #         attr = instructions[0]
-   #         for key in instructions[-1]:
-   #             constructor = algos[key]
-   #             new_dict["{0}_{1}similarity".format(attr, key)] = null_attr_value if True in [treat_attr_as_null(d[attr])
-   #                                                                                           for d in
-   #                                                                                           [left_data,
-   #                                                                                            right_data]] else constructor().normalized_similarity(
-   #                 left_data[attr], right_data[attr])
-   #
-   #     else:
-   #         attr_1, attr_2 = instructions[0], instructions[1]
-   #         for key in instructions[-1]:
-   #             constructor = algos[key]
-   #
-   #             # new_dict["{0}_{1}_{2}similarity".format(attr_1, attr_2, key)] = 0\
-   #             a1_a2_similarity = null_attr_value \
-   #                 if True in [treat_attr_as_null(left_data[attr_1]), treat_attr_as_null(right_data[attr_2])] \
-   #                 else constructor().normalized_similarity(left_data[attr_1], right_data[attr_2])
-   #
-   #             # new_dict["{0}_{1}_{2}similarity".format(attr_2, attr_1, key)] = 0\
-   #             a2_a1_similarity = null_attr_value \
-   #                 if True in [treat_attr_as_null(left_data[attr_2]), treat_attr_as_null(right_data[attr_1])] \
-   #                 else constructor().normalized_similarity(left_data[attr_2], right_data[attr_1])
-   #             new_dict["{0}_{1}_{2}similarity".format(attr_1, attr_2, key)] = (
-   #                                                                                         a1_a2_similarity + a2_a1_similarity) / 2.0
 
-   if not treat_attr_as_null(left_data["price"]) and not treat_attr_as_null(right_data["price"]):
-       new_dict["price_diff"] = abs(left_data["price"] - right_data["price"]) / ((left_data["price"] + right_data["price"]) / 2.0)
-   else:
-       new_dict["price_diff"] = -1
-   keys = list(new_dict.keys())
-   keys.sort()
-
-   return array([new_dict[k] for k in keys])
+    if not treat_attr_as_null(left_data["price"]) and not treat_attr_as_null(right_data["price"]):
+        price_diff = abs(left_data["price"] - right_data["price"]) / ((left_data["price"] + right_data["price"]) / 2.0)
+    else:
+        price_diff = -1
+    return array([price_diff])
 
 
 def split_table(table: pd.DataFrame, percentage: float, random=True):

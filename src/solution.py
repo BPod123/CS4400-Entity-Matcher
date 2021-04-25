@@ -1,5 +1,4 @@
 from os.path import abspath, join
-from bisect import bisect_left
 from src.data_handler import *
 from itertools import product
 
@@ -8,8 +7,6 @@ from itertools import product
 def find_matches(tests, ltable, rtable, rf):
     classifications = rf.predict([get_data_from_ids(t[0], t[1], ltable, rtable) for t in tests])
     return [tests[i] for i in range(len(tests)) if classifications[i]]
-
-
 
 
 def block_by_attr(ltable: pd.DataFrame, rtable: pd.DataFrame, attr="brand", secondary_search_in="title"):
@@ -130,18 +127,10 @@ def run_solution(training_data: pd.DataFrame, ltable: pd.DataFrame, rtable: pd.D
     :param class_name: Attribute key associated with the correct classification for each example in the training data
     :return: creates the output.csv file with the results from testing everything that is not training data
     """
-    #*****************************
+
     training_tups = {(training_data["ltable_id"][i], training_data["rtable_id"][i]) for i in range(len(training_data))}
-
     examples, labels = generate_examples(training_data, ltable, rtable, class_name)
-
-
-
-    # training_label = training_data[class_name]
     from sklearn.ensemble import RandomForestRegressor
-    # rf = RandomForestClassifier(class_weight="balanced", random_state=0)
-    # rf = RandomForestClassifier()
-
     rf = RandomForestRegressor(min_samples_leaf=100)
     rf.fit(examples, labels)
 
@@ -150,8 +139,6 @@ def run_solution(training_data: pd.DataFrame, ltable: pd.DataFrame, rtable: pd.D
     outut_dict = {"ltable_id": [x[0] for x in matching_ids], "rtable_id": [x[1] for x in matching_ids]}
     output = pd.DataFrame(data=outut_dict)
     output.to_csv(output_file, index=False)
-
-
 
 
 if __name__ == "__main__":
